@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <meta http-equiv="refresh" content="10">
+    <script src="/static/js/jquery.min.js"></script>
+</head>
+<body>
+    <div id="main" style="height:400px"></div>
+    <script src="/static/js/echarts.js"></script>
+    <script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: '/static/js'
+            }
+        });
+        require(
+            [
+                'echarts',
+                'echarts/chart/line' // 按需加载模块
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main')); 
+                myChart.showLoading();
+                var datas = [];
+                $.ajax({
+                    type:"get",  
+                    url:"/visual/return_json",
+                    dataType:"json",
+                    success:function(result){
+                        $.each(result.data,function(index, item){
+                            var datetime = new Date(item['eventTime']);
+                            datas.push([datetime, item['temperature']]);
+                        })
+                        // alert(datas)
+                        var option = {
+                            title:{
+                                text: "温度-时间"
+                            },
+                            tooltip : {
+                                trigger: 'item',
+                                formatter : function (params) {
+                                    var date = new Date(params.value[0]);
+                                    data = date.getFullYear() + '-'
+                                        + (date.getMonth() + 1) + '-'
+                                        + date.getDate() + ' '
+                                        + date.getHours() + ':'
+                                        + date.getMinutes()+':'
+                                        + date.getSeconds();
+                                    return data + '<br/>'
+                                        + params.value[1]
+                                }
+                            },
+                            legend: {
+                                data:['温度']
+                            },
+                            xAxis : [
+                                {
+                                    type: 'time',
+                                    splitNumber:10
+                                }
+                            ],
+                            yAxis : [
+                                {
+                                    type : 'value'
+                                }
+                            ],
+                            series : [
+                                {
+                                    name:"time-temperature",
+                                    type:"line",
+                                    showAllSymbol: true,
+                                    symbolSize: function (value){
+                                        return Math.round(value[1]/10) + 2;
+                                    },
+                                    data: datas
+                                }
+                            ]
+                        };
+                        myChart.hideLoading();
+                        myChart.setOption(option); 
+                    }
+                })
+            }
+        );
+    </script>
+</body>
+</html>
