@@ -9,7 +9,7 @@ from .models import Temperature
 # Create your views here.
 def datachanged(request):
 	if request.method == 'POST':
-		body = json.loads(request.body)
+		body = json.loads(request.body.decode("utf-8"))
 		if len(body)>0:
 			deviceId = body['deviceId']
 			service = body['service']

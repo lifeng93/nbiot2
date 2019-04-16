@@ -7,7 +7,7 @@ def visual(request):
 	return render(request, 'visual/example.html')
 
 def return_json(request):
-	newdatas = Temperature.objects.filter(deviceId='5d76557d-a4dd-42ab-822c-a7e6a5b4bd7a')\
+	newdatas = Temperature.objects.filter(deviceId='51c653fc-f1db-4ad5-bcb9-1bf89d9a5a77')\
 	.values('temperature', 'eventTime').order_by('-eventTime')[0:10:-1]
 	return JsonResponse({'data':newdatas})
 	
