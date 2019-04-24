@@ -8,3 +8,8 @@ class Temperature(models.Model):
 
     def __str__(self):
         return self.deviceId + str(self.eventTime)
+
+
+class Push(models.Model):
+	content = models.CharField(max_length=500)
+	add_time = models.DateTimeField(auto_now_add=True)
